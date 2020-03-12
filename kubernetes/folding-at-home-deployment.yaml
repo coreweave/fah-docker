@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: folding-at-home
+spec:
+  progressDeadlineSeconds: 25920000
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: folding-at-home
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: "50%"
+      maxSurge: 0
+  template:
+    metadata:
+      annotations:
+        qos.coreweave.cloud/drain: "false"
+      labels:
+        app.kubernetes.io/name: folding-at-home
+    spec:
+      - name: folding
+        image: coreweave/fah-gpu:7.5.1
+        imagePullPolicy: IfNotPresent
+        #command: ['bash', '-c', 'FAHClient --user=CoreWeave --team=236584 --gpu=true --smp=true --priority=low --cpu-usage=90 --web-allow=0/0 --allow=0/0 --gpu-usage=100']
+        ports:
+        - containerPort: 7396
+          name: ui
+          protocol: TCP
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 7396
+          timeoutSeconds: 1
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 7396
+          timeoutSeconds: 1
+        resources:
+          limits:
+            cpu: "3"
+            memory: 8Gi
+            nvidia.com/gpu: 8 # Allocate 8 GPUs
+          requests:
+            cpu: 100m
+            memory: 5Gi
+        volumeMounts:
+        - name: userdir
+          mountPath: /root
+      volumes:
+      - name: userdir
+        hostPath:
+          path: "/mnt/local/fah"
+          type: DirectoryOrCreate
+      automountServiceAccountToken: false
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
