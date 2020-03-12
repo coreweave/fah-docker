@@ -1,0 +1,19 @@
+FROM nvidia/opencl:runtime-ubuntu18.04
+
+MAINTAINER Peter Salanki <peter@coreweave.com>
+
+ENV DEBIAN_FRONTEND noninteractive
+
+ADD https://download.foldingathome.org/releases/public/release/fahclient/debian-stable-64bit/v7.5/fahclient_7.5.1_amd64.deb /tmp/
+
+RUN apt-get -y update
+RUN apt-get -y install ocl-icd-opencl-dev
+
+RUN dpkg -i /tmp/fahclient_7.5.1_amd64.deb || exit 0
+
+WORKDIR /root
+VOLUME /root
+
+EXPOSE 7396
+
+CMD FAHClient --user=CoreWeave --team=236584 --gpu=true --smp=true --priority=low --cpu-usage=90 --web-allow=0/0 --allow=0/0 --gpu-usage=100
