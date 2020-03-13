@@ -1,6 +1,6 @@
 ## GPU Folding @ Home in Docker
 
-This repository provides a Dockerfile and example Kubernets manfiest for running [Folding @ Home](https://foldingathome.org) with NVIDIA GPU support in a container. You will need the [NVIDIA Docker Runtime](https://github.com/NVIDIA/nvidia-docker) installed on your host.
+This repository provides a Dockerfile and example Kubernetes manfiest for running [Folding @ Home](https://foldingathome.org) with NVIDIA GPU support in a container. You will need the [NVIDIA Docker Runtime](https://github.com/NVIDIA/nvidia-docker) installed on your host.
 
 This image is published to [Docker Hub](https://hub.docker.com/repository/docker/coreweave/fah-gpu).
 
