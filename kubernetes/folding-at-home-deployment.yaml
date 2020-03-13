@@ -1,9 +1,12 @@
+###
+### Folding @ Home
+### This manifest requires the NVIDIA Device Plugin
+###
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: folding-at-home
 spec:
-  progressDeadlineSeconds: 25920000
   replicas: 1
   revisionHistoryLimit: 2
   selector:
@@ -47,11 +50,10 @@ spec:
           timeoutSeconds: 1
         resources:
           limits:
-            cpu: "3"
-            memory: 8Gi
+            memory: 10Gi
             nvidia.com/gpu: 8 # Allocate 8 GPUs
           requests:
-            cpu: 100m
+            cpu: 1
             memory: 5Gi
         volumeMounts:
         - name: userdir
@@ -59,7 +61,7 @@ spec:
       volumes:
       - name: userdir
         hostPath:
-          path: "/mnt/local/fah"
+          path: "/mnt/local/fah" # Path for work unit snapshots, important to not lose work completed in case of reboots
           type: DirectoryOrCreate
       automountServiceAccountToken: false
       restartPolicy: Always
