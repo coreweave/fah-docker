@@ -1,0 +1,28 @@
+name: CI/CD
+
+on:
+  push:
+  schedule:
+  - cron:  '1 0 * * *'
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+    - name: Build Docker image
+      run: |
+        docker build . \
+          --file Dockerfile \
+          --tag coreweave/fah-gpu:$GITHUB_SHA \
+          --compress
+        docker images
+    - name: Build GPU only Docker image
+      run: |
+        docker build . \
+          --file Dockerfile.gpuonly \
+          --tag coreweave/fah-gpu:gpuonly-$GITHUB_SHA \
+          --compress
+        docker images
