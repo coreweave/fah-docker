@@ -21,6 +21,8 @@ jobs:
         tag_with_sha: true
         tag_with_ref: true
         push: false
+    - name: List built image
+      run: docker images
     - name: Build GPU only Docker image
       uses: docker/build-push-action@v1
       with:
@@ -29,5 +31,5 @@ jobs:
         tag_with_sha: true
         tag_with_ref: true
         push: false
-    - name: List built images
+    - name: List built GPU image
       run: docker images
