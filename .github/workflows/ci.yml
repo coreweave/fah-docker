@@ -2,6 +2,7 @@ name: CI/CD
 
 on:
   push:
+  pull_request:
   schedule:
   - cron:  '1 0 * * *'
 
@@ -13,16 +14,20 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Build Docker image
-      run: |
-        docker build . \
-          --file Dockerfile \
-          --tag coreweave/fah-gpu:$GITHUB_SHA \
-          --compress
-        docker images
+      uses: docker/build-push-action@v1
+      with:
+        repository: coreweave/fah-gpu
+        dockerfile: Dockerfile
+        tag_with_sha: true
+        tag_with_ref: true
+        push: false
     - name: Build GPU only Docker image
-      run: |
-        docker build . \
-          --file Dockerfile.gpuonly \
-          --tag coreweave/fah-gpu:gpuonly-$GITHUB_SHA \
-          --compress
-        docker images
+      uses: docker/build-push-action@v1
+      with:
+        repository: coreweave/fah-gpu
+        dockerfile: Dockerfile.gpuonly
+        tag_with_sha: true
+        tag_with_ref: true
+        push: false
+    - name: List built images
+      run: docker images

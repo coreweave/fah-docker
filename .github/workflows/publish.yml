@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
     - name: Build and Publish to Registry
-      if: "! ${{ startsWith(github.ref, 'refs/tags/') }}"
+      if: "!(startsWith(github.ref, 'refs/tags/'))"
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -24,7 +24,7 @@ jobs:
         dockerfile: Dockerfile
         tags: latest,7.5.1
     - name: Build and Publish GPU Only to Registry
-      if: "! ${{ startsWith(github.ref, 'refs/tags/') }}"
+      if: "!(startsWith(github.ref, 'refs/tags/'))"
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
@@ -33,7 +33,7 @@ jobs:
         dockerfile: Dockerfile.gpuonly
         tags: 7.5.1-gpuonly
     - name: Build and Publish to Registry with Release Tag
-      if: ${{ startsWith(github.ref, 'refs/tags/') }}
+      if: startsWith(github.ref, 'refs/tags/')
       uses: docker/build-push-action@v1
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
